@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .hide{
+            display: none;
+        }
+        .shadow{
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: 0;
+            background-color: black;
+            opacity: 0.4;
+            z-index: 999;
+        }
+        .loading{
+            position: fixed;
+            width: 32px;
+            height: 32px;
+            left: 50%;
+            top: 50%;
+            margin-left: -16px;
+            margin-top: -16px;
+            background-image: url("/static/images/loading.gif");
+        }
+        .add_modal{
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            width: 400px;
+            height: 300px;
+            background-color: white;
+            z-index: 1000;
+            margin-left: -200px;
+            margin-top: -200px;
+        }
+    </style>
+</head>
+<body>
+    <h1>老师列表</h1>
+    <a href="/add_teacher/">添加</a>
+    <a id="btnAdd">对话框添加</a>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>老师姓名</th>
+                <th>任教班级</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for row in teacher_list %}
+            <tr>
+                <td>{{row.tid}}</td>
+                <td>{{row.name}}</td>
+                <td>
+                    {% for item in row.titles %}
+                        <span style="display: inline-block">{{ item }}</span>
+                    {% endfor %}
+                <td>
+                    <a href="/edit_teacher/?nid={{ row.tid }}/">编辑</a>
+                    |
+                    <a>删除</a>
+                </td>
+            </tr>
+        {% endfor%}
+        </tbody>
+    </table>
+    <div id="shadow" class="shadow hide"></div>
+    <div id="loading" class="loading hide"></div>
+    <div id="add_modal" class="add_modal hide">
+        <p>
+            老师姓名：<input type="text" name="name" id="addName"/>
+        </p>
+        <p>
+            <select id="classIds" multiple size="5">
+
+            </select>
+            <a id="addSubmit">提交</a>
+        </p>
+    </div>
+    <script src="/static/jquery.js"></script>
+    <script>
+        $(function () {
+            bindAdd();
+            bindAddSubmit();
+        });
+
+        function bindAdd() {
+            $('#btnAdd').click(function () {
+                $('#shadow,#loading').removeClass('hide');
+                $.ajax({
+                    url:"/get_all_class/",
+                    type:'GET',
+                    dataType:'JSON',
+                    success:function (arg) {
+                        console.log(arg)
+                        $.each(arg, function (i, row) {
+                            let tag = document.createElement('option');
+                            tag.innerHTML = row.title;
+                            tag.setAttribute('value', row.id);
+                            $('#classIds').append(tag);
+                        });
+
+                        $('#loading').addClass('hide');
+                        $('#add_modal').removeClass('hide');
+                    }
+                })
+            })
+        }
+
+        function bindAddSubmit() {
+
+            $('#addSubmit').click(function () {
+                let name = $('#addName').val();
+                let class_id_list = $('#classIds').val();
+                console.log(name, class_id_list)
+                $.ajax({
+                    url: '/modal_add_teacher/',
+                    type:'POST',
+                    data:{'name':name, 'class_id_list': class_id_list},
+                    dataType:'JSON',
+                    traditional:true,//日过提交的数据有列表，添加此属性
+                    success:function (arg) {
+                        if(arg.status){
+                            location.reload();
+                        }else{
+                            alert(arg.message);
+                        }
+                    }
+                })
+            });
+        }
+    </script>
+</body>
+</html>
