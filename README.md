@@ -1,2 +1,2 @@
 # stuManage
-分页面功能尚未实现，快考试了，过几天再改
+templates里的layout.html是网页母板,students.html,classes.html以及teachers.html都继承自该母板。
