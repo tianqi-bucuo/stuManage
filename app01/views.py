@@ -304,8 +304,8 @@ def login(request):
             return render(request, 'login.html')
 
 
-
-
+def test1(request):
+    return render(request, 'test1.html',)
 
 
 

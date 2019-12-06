@@ -25,20 +25,25 @@
     </div>
     <div class="pg-body">
         <div class="menus">
-            <a>班级管理</a>
-            <a>学生管理</a>
-            <a>老师管理</a>
+            <a href="/classes/">班级管理</a>
+            <a href="/students/">学生管理</a>
+            <a href="/teachers/">老师管理</a>
         </div>
         <div class="content">
             <ol class="breadcrumb">
                 <li><a href="#">首页</a></li>
-                <li><a href="#">班级管理</a></li>
-                <li class="active">添加班级</li>
+{#                <li><a href="#">班级管理</a></li>#}
+{#                <li class="active">添加班级</li>#}
             </ol>
-            {% block xx %}
+            {% block x1 %}
+
             {% endblock %}
         </div>
     </div>
+    {% block x2 %}
+
+    {% endblock %}
+
     {% block js %}
 
     {% endblock %}
